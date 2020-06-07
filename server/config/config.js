@@ -18,6 +18,17 @@ let ulrDB;
 if (process.env.NODE_ENV === 'DEV') {
     ulrDB = 'mongodb://localhost:27017/cafe';
 } else {
+    ulrDB = process.env.MONGO_URI;
+}
+//creamos un env en este caso seria URLDB
+process.env.URLDB = ulrDB;
+
+//anterior sin ocultar las credenciales
+let ulrDB;
+
+if (process.env.NODE_ENV === 'DEV') {
+    ulrDB = 'mongodb://localhost:27017/cafe';
+} else {
     ulrDB = 'mongodb+srv://kevins:H9VWghMdb4oaap2E@cluster0-ghwth.mongodb.net/cafe'
 }
 //creamos un env en este caso seria URLDB
