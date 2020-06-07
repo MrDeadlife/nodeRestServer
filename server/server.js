@@ -1,7 +1,8 @@
 require('./config/config');
-const express = require('express')
+const express = require('express');
+const mongoose = require('mongoose');
 const app = express();
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
 //cada peticion hecha siempre pasa por los middleware
 //middleware
@@ -9,38 +10,30 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ extended: false }))
     //middleware
     //  analizar aplicación / json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
-app.get('/usuario', function(req, res) {
-    res.json('Get Usuario')
-})
 
-app.post('/usuario', function(req, res) {
-    let body = req.body;
+//llamamos el archivo usuarios.js donde estan las peticiones
+app.use(require('./routes/usuario'));
 
-    if (body.nombre === undefined) {
-        res.status(400).json({
-            ok: false,
-            mensaje: 'El nombre es necesario'
-        });
-    } else {
-        res.json({
-            persona: body
-        });
 
-    }
-
-})
-app.put('/usuario/:id', function(req, res) {
-    //recibiendo el id y guardandolo 
-    let id = req.params.id;
-    res.json({
-        id
-    });
+//coneccion a mongo
+/*
+mongoose.connect('mongodb://localhost:28017/cafe', (err, res) => {
+    if (err) throw err;
+    console.log('online')
 });
-app.delete('/usuario', function(req, res) {
-    res.json('Delete Usuario')
-})
+*/
+
+mongoose.connect(process.env.URLDB, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true
+    }).then(() => console.log('DB Connected!'))
+    .catch(err => {
+        console.log('error' + err);
+    });
+
 
 app.listen(process.env.PORT, () => {
     console.log(`Escuchando el puerto ${process.env.PORT}`);
